@@ -232,8 +232,9 @@ def eval_model_iou(version,
                                           grid_conf=grid_conf, bsz=bsz, nworkers=nworkers,
                                           parser_name='segmentationdata')
 
-    device = torch.device('cpu') if gpuid < 0 else torch.device(f'cuda:{gpuid}')
-
+    # device = torch.device('cpu') if gpuid < 0 else torch.device(f'cuda:{gpuid}')
+    device = torch.device('cpu')
+    
     model = compile_model(grid_conf, data_aug_conf, outC=1)
     print('loading', modelf)
     model.load_state_dict(torch.load(modelf))
