@@ -234,13 +234,21 @@ def eval_model_iou(version,
 
     # device = torch.device('cpu') if gpuid < 0 else torch.device(f'cuda:{gpuid}')
     device = torch.device('cpu')
-    
+
     model = compile_model(grid_conf, data_aug_conf, outC=1)
     print('loading', modelf)
-    model.load_state_dict(torch.load(modelf))
+    # model.load_state_dict(torch.load(modelf))
+    model.load_state_dict(torch.load(modelf, map_location=torch.device('cpu')))
+
     model.to(device)
 
-    loss_fn = SimpleLoss(1.0).cuda(gpuid)
+    # loss_fn = SimpleLoss(1.0).cuda(gpuid)
+
+    if torch.cuda.is_available():
+        loss_fn = SimpleLoss(1.0).cuda(gpuid)
+    else:
+        loss_fn = SimpleLoss(1.0)
+
 
     model.eval()
     val_info = get_val_info(model, valloader, loss_fn, device)
